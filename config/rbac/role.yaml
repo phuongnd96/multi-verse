@@ -1,0 +1,59 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - triggers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - triggers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - triggers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - universes
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - universes/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - multiverse.saga.dev
+  resources:
+  - universes/status
+  verbs:
+  - get
+  - patch
+  - update

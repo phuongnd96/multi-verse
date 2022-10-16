@@ -1,0 +1,16 @@
+{
+    "command-runner.terminal.name": "runCommand",
+    "command-runner.terminal.autoClear": true,
+    "command-runner.terminal.autoFocus": true,
+    "command-runner.commands": {
+        "echo workspaceFolder": "echo ${workspaceFolder}",
+        "echo file": "echo ${file}",
+        "build": "make build",
+        "generate": "make generate",
+        "manifests": "make manifests",
+        "run": "bin/manager",
+        "apply": "kubectl apply -f universe.yaml",
+        "apply crd": "kustomize build config/crd | kubectl apply -f -"
+
+    }
+}

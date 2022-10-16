@@ -1,0 +1,8 @@
+apiVersion: multiverse.saga.dev/v1alpha1
+kind: Universe
+metadata:
+  name: universe-sample
+spec:
+  pr: 439
+  repository: https://github.com/KYRDTeam/org-web.git
+  projectId: org-playground

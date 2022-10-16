@@ -1,0 +1,33 @@
+apiVersion: multiverse.saga.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: trigger-sample
+  namespace: dev-org-wallet
+spec:
+  credentialSecretRef: my-git-secret
+  labelToDeploymentMap:
+    svc/k-authentication: ""
+    svc/k-detect-new-token: ""
+    svc/k-gas: ""
+    svc/k-landing-page: ""
+    svc/k-nft-data: ""
+    svc/k-notification-api: ""
+    svc/k-token-list: ""
+    svc/k-tradingview: ""
+    svc/k-transaction-history: ""
+    svc/org-balance-service: ""
+    svc/org-contract-info: ""
+    svc/org-log-realtime: ""
+    svc/org-neproxy: ""
+    svc/org-pricing-service: ""
+    svc/lp-info: ""
+    svc/ping-demo: ping-demo
+  primaryCluster: test-cluster
+  projectId: dev-org-wallet
+  repositories:
+  - KYRDTeam/ping-demo
+  requeueAfterMinutes: 5
+  targetNamespaces:
+  - demo
+status:
+  observedGeneration: 6

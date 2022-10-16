@@ -1,0 +1,28 @@
+domain: saga.dev
+layout:
+- go.kubebuilder.io/v3
+plugins:
+  manifests.sdk.operatorframework.io/v2: {}
+  scorecard.sdk.operatorframework.io/v2: {}
+projectName: preview-operator
+repo: github.com/phuongnd96/multi-verse
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: saga.dev
+  group: multiverse
+  kind: Universe
+  path: github.com/phuongnd96/multi-verse/api/v1alpha1
+  version: v1alpha1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: saga.dev
+  group: multiverse
+  kind: Trigger
+  path: github.com/phuongnd96/multi-verse/api/v1alpha1
+  version: v1alpha1
+version: "3"

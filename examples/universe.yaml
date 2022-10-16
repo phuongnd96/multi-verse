@@ -1,0 +1,11 @@
+apiVersion: multiverse.saga.dev/v1alpha1
+kind: Universe
+metadata:
+  name: pr-1
+  namespace: org-playground
+  annotations:
+    multiverse.saga.dev/cluster-addons: external-dns,nginx-ingress
+spec:
+  projectId: org-playground
+  ttl: 86400
+ 

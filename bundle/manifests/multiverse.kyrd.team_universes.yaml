@@ -1,0 +1,3145 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: universes.multiverse.saga.dev
+spec:
+  group: multiverse.saga.dev
+  names:
+    kind: Universe
+    listKind: UniverseList
+    plural: universes
+    singular: universe
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.computenetwork
+      name: ComputeNetwork
+      type: string
+    - jsonPath: .status.computesubnetwork
+      name: ComputeSubNetwork
+      type: string
+    - jsonPath: .status.containercluster
+      name: ContainerCluster
+      type: string
+    - jsonPath: .status.sqlinstance
+      name: SQLInstance
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Universe is the Schema for the universes API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: UniverseSpec defines the desired state of Universe
+            properties:
+              compute:
+                description: Compute is a nested struct for gcp compute resources
+                properties:
+                  computeNetwork:
+                    description: ComputeNetwork is the Schema for the compute API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          autoCreateSubnetworks:
+                            description: "Immutable. When set to 'true', the network
+                              is created in \"auto subnet mode\" and it will create
+                              a subnet for each region automatically across the '10.128.0.0/9'
+                              address range. \n When set to 'false', the network is
+                              created in \"custom subnet mode\" so the user can explicitly
+                              connect subnetwork resources."
+                            type: boolean
+                          deleteDefaultRoutesOnCreate:
+                            type: boolean
+                          description:
+                            description: Immutable. An optional description of this
+                              resource. The resource must be recreated to modify this
+                              field.
+                            type: string
+                          mtu:
+                            description: Immutable. Maximum Transmission Unit in bytes.
+                              The minimum value for this field is 1460 and the maximum
+                              value is 1500 bytes.
+                            type: integer
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          routingMode:
+                            description: 'The network-wide routing mode to use. If
+                              set to ''REGIONAL'', this network''s cloud routers will
+                              only advertise routes with subnetworks of this network
+                              in the same region as the router. If set to ''GLOBAL'',
+                              this network''s cloud routers will advertise routes
+                              with all subnetworks of this network, across regions.
+                              Possible values: ["REGIONAL", "GLOBAL"].'
+                            type: string
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ComputeNetwork's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          gatewayIpv4:
+                            description: The gateway address for default routing out
+                              of the network. This value is selected by GCP.
+                            type: string
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          selfLink:
+                            type: string
+                        type: object
+                    type: object
+                  computeRouter:
+                    description: ComputeRouter is the Schema for the compute API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          bgp:
+                            description: BGP information specific to this router.
+                            properties:
+                              advertiseMode:
+                                description: 'User-specified flag to indicate which
+                                  mode to use for advertisement. Default value: "DEFAULT"
+                                  Possible values: ["DEFAULT", "CUSTOM"].'
+                                type: string
+                              advertisedGroups:
+                                description: "User-specified list of prefix groups
+                                  to advertise in custom mode. This field can only
+                                  be populated if advertiseMode is CUSTOM and is advertised
+                                  to all peers of the router. These groups will be
+                                  advertised in addition to any specified prefixes.
+                                  Leave this field blank to advertise no custom groups.
+                                  \n This enum field has the one valid value: ALL_SUBNETS."
+                                items:
+                                  type: string
+                                type: array
+                              advertisedIpRanges:
+                                description: User-specified list of individual IP
+                                  ranges to advertise in custom mode. This field can
+                                  only be populated if advertiseMode is CUSTOM and
+                                  is advertised to all peers of the router. These
+                                  IP ranges will be advertised in addition to any
+                                  specified groups. Leave this field blank to advertise
+                                  no custom IP ranges.
+                                items:
+                                  properties:
+                                    description:
+                                      description: User-specified description for
+                                        the IP range.
+                                      type: string
+                                    range:
+                                      description: The IP range to advertise. The
+                                        value must be a CIDR-formatted string.
+                                      type: string
+                                  required:
+                                  - range
+                                  type: object
+                                type: array
+                              asn:
+                                description: Local BGP Autonomous System Number (ASN).
+                                  Must be an RFC6996 private ASN, either 16-bit or
+                                  32-bit. The value will be fixed for this router
+                                  resource. All VPN tunnels that link to this router
+                                  will have the same local ASN.
+                                type: integer
+                              keepaliveInterval:
+                                description: The interval in seconds between BGP keepalive
+                                  messages that are sent to the peer. Hold time is
+                                  three times the interval at which keepalive messages
+                                  are sent, and the hold time is the maximum number
+                                  of seconds allowed to elapse between successive
+                                  keepalive messages that BGP receives from a peer.
+                                  BGP will use the smaller of either the local hold
+                                  time value or the peer's hold time value as the
+                                  hold time for the BGP connection between the two
+                                  peers. If set, this value must be between 20 and
+                                  60. The default is 20.
+                                type: integer
+                            required:
+                            - asn
+                            type: object
+                          description:
+                            description: An optional description of this resource.
+                            type: string
+                          encryptedInterconnectRouter:
+                            description: "Immutable. Field to indicate if a router
+                              is dedicated to use with encrypted Interconnect Attachment
+                              (IPsec-encrypted Cloud Interconnect feature). \n Not
+                              currently available publicly."
+                            type: boolean
+                          networkRef:
+                            description: A reference to the network to which this
+                              router belongs.
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          region:
+                            description: Immutable. Region where the router resides.
+                            type: string
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                        required:
+                        - networkRef
+                        - region
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ComputeRouter's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          creationTimestamp:
+                            description: Creation timestamp in RFC3339 text format.
+                            type: string
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          selfLink:
+                            type: string
+                        type: object
+                    type: object
+                  computeRouterNAT:
+                    description: ComputeRouterNAT is the Schema for the compute API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          drainNatIps:
+                            items:
+                              properties:
+                                external:
+                                  description: The external name of the referenced
+                                    resource
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                  type: string
+                                namespace:
+                                  description: 'Namespace of the referent. More info:
+                                    https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                  type: string
+                              type: object
+                            type: array
+                          enableDynamicPortAllocation:
+                            description: "Enable Dynamic Port Allocation. If minPorts
+                              is set, minPortsPerVm must be set to a power of two
+                              greater than or equal to 32. If minPortsPerVm is not
+                              set, a minimum of 32 ports will be allocated to a VM
+                              from this NAT config. \n Mutually exclusive with enableEndpointIndependentMapping."
+                            type: boolean
+                          enableEndpointIndependentMapping:
+                            description: Specifies if endpoint independent mapping
+                              is enabled. This is enabled by default. For more information
+                              see the [official documentation](https://cloud.google.com/nat/docs/overview#specs-rfcs).
+                            type: boolean
+                          icmpIdleTimeoutSec:
+                            description: Timeout (in seconds) for ICMP connections.
+                              Defaults to 30s if not set.
+                            type: integer
+                          logConfig:
+                            description: Configuration for logging on NAT.
+                            properties:
+                              enable:
+                                description: Indicates whether or not to export logs.
+                                type: boolean
+                              filter:
+                                description: 'Specifies the desired filtering of logs
+                                  on this NAT. Possible values: ["ERRORS_ONLY", "TRANSLATIONS_ONLY",
+                                  "ALL"].'
+                                type: string
+                            required:
+                            - enable
+                            - filter
+                            type: object
+                          minPortsPerVm:
+                            description: Minimum number of ports allocated to a VM
+                              from this NAT.
+                            type: integer
+                          natIpAllocateOption:
+                            description: 'How external IPs should be allocated for
+                              this NAT. Valid values are ''AUTO_ONLY'' for only allowing
+                              NAT IPs allocated by Google Cloud Platform, or ''MANUAL_ONLY''
+                              for only user-allocated NAT IP addresses. Possible values:
+                              ["MANUAL_ONLY", "AUTO_ONLY"].'
+                            type: string
+                          natIps:
+                            items:
+                              properties:
+                                external:
+                                  description: The external name of the referenced
+                                    resource
+                                  type: string
+                                name:
+                                  description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                  type: string
+                                namespace:
+                                  description: 'Namespace of the referent. More info:
+                                    https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                  type: string
+                              type: object
+                            type: array
+                          region:
+                            description: Immutable. Region where the router and NAT
+                              reside.
+                            type: string
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          routerRef:
+                            description: The Cloud Router in which this NAT will be
+                              configured.
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          sourceSubnetworkIpRangesToNat:
+                            description: 'How NAT should be configured per Subnetwork.
+                              If ''ALL_SUBNETWORKS_ALL_IP_RANGES'', all of the IP
+                              ranges in every Subnetwork are allowed to Nat. If ''ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES'',
+                              all of the primary IP ranges in every Subnetwork are
+                              allowed to Nat. ''LIST_OF_SUBNETWORKS'': A list of Subnetworks
+                              are allowed to Nat (specified in the field subnetwork
+                              below). Note that if this field contains ALL_SUBNETWORKS_ALL_IP_RANGES
+                              or ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, then there
+                              should not be any other RouterNat section in any Router
+                              for this network in this region. Possible values: ["ALL_SUBNETWORKS_ALL_IP_RANGES",
+                              "ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES", "LIST_OF_SUBNETWORKS"].'
+                            type: string
+                          subnetwork:
+                            description: One or more subnetwork NAT configurations.
+                              Only used if 'source_subnetwork_ip_ranges_to_nat' is
+                              set to 'LIST_OF_SUBNETWORKS'.
+                            items:
+                              properties:
+                                secondaryIpRangeNames:
+                                  description: List of the secondary ranges of the
+                                    subnetwork that are allowed to use NAT. This can
+                                    be populated only if 'LIST_OF_SECONDARY_IP_RANGES'
+                                    is one of the values in sourceIpRangesToNat.
+                                  items:
+                                    type: string
+                                  type: array
+                                sourceIpRangesToNat:
+                                  description: 'List of options for which source IPs
+                                    in the subnetwork should have NAT enabled. Supported
+                                    values include: ''ALL_IP_RANGES'', ''LIST_OF_SECONDARY_IP_RANGES'',
+                                    ''PRIMARY_IP_RANGE''.'
+                                  items:
+                                    type: string
+                                  type: array
+                                subnetworkRef:
+                                  description: The subnetwork to NAT.
+                                  properties:
+                                    external:
+                                      description: The external name of the referenced
+                                        resource
+                                      type: string
+                                    name:
+                                      description: 'Name of the referent. More info:
+                                        https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                      type: string
+                                    namespace:
+                                      description: 'Namespace of the referent. More
+                                        info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                      type: string
+                                  type: object
+                              required:
+                              - sourceIpRangesToNat
+                              - subnetworkRef
+                              type: object
+                            type: array
+                          tcpEstablishedIdleTimeoutSec:
+                            description: Timeout (in seconds) for TCP established
+                              connections. Defaults to 1200s if not set.
+                            type: integer
+                          tcpTransitoryIdleTimeoutSec:
+                            description: Timeout (in seconds) for TCP transitory connections.
+                              Defaults to 30s if not set.
+                            type: integer
+                          udpIdleTimeoutSec:
+                            description: Timeout (in seconds) for UDP connections.
+                              Defaults to 30s if not set.
+                            type: integer
+                        required:
+                        - natIpAllocateOption
+                        - region
+                        - routerRef
+                        - sourceSubnetworkIpRangesToNat
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ComputeRouterNAT's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                        type: object
+                    type: object
+                  computeSubNetwork:
+                    description: ComputeSubnetwork is the Schema for the compute API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          description:
+                            description: Immutable. An optional description of this
+                              resource. Provide this property when you create the
+                              resource. This field can be set only at resource creation
+                              time.
+                            type: string
+                          ipCidrRange:
+                            description: The range of internal addresses that are
+                              owned by this subnetwork. Provide this property when
+                              you create the subnetwork. For example, 10.0.0.0/8 or
+                              192.168.0.0/16. Ranges must be unique and non-overlapping
+                              within a network. Only IPv4 is supported.
+                            type: string
+                          ipv6AccessType:
+                            description: 'Immutable. The access type of IPv6 address
+                              this subnet holds. It''s immutable and can only be specified
+                              during creation or the first time the subnet is updated
+                              into IPV4_IPV6 dual stack. If the ipv6_type is EXTERNAL
+                              then this subnet cannot enable direct path. Possible
+                              values: ["EXTERNAL"].'
+                            type: string
+                          logConfig:
+                            description: Denotes the logging options for the subnetwork
+                              flow logs. If logging is enabled logs will be exported
+                              to Stackdriver. This field cannot be set if the 'purpose'
+                              of this subnetwork is 'INTERNAL_HTTPS_LOAD_BALANCER'.
+                            properties:
+                              aggregationInterval:
+                                description: 'Can only be specified if VPC flow logging
+                                  for this subnetwork is enabled. Toggles the aggregation
+                                  interval for collecting flow logs. Increasing the
+                                  interval time will reduce the amount of generated
+                                  flow logs for long lasting connections. Default
+                                  is an interval of 5 seconds per connection. Default
+                                  value: "INTERVAL_5_SEC" Possible values: ["INTERVAL_5_SEC",
+                                  "INTERVAL_30_SEC", "INTERVAL_1_MIN", "INTERVAL_5_MIN",
+                                  "INTERVAL_10_MIN", "INTERVAL_15_MIN"].'
+                                type: string
+                              filterExpr:
+                                description: Export filter used to define which VPC
+                                  flow logs should be logged, as as CEL expression.
+                                  See https://cloud.google.com/vpc/docs/flow-logs#filtering
+                                  for details on how to format this field. The default
+                                  value is 'true', which evaluates to include everything.
+                                type: string
+                              flowSampling:
+                                description: Can only be specified if VPC flow logging
+                                  for this subnetwork is enabled. The value of the
+                                  field must be in [0, 1]. Set the sampling rate of
+                                  VPC flow logs within the subnetwork where 1.0 means
+                                  all collected logs are reported and 0.0 means no
+                                  logs are reported. Default is 0.5 which means half
+                                  of all collected logs are reported.
+                                type: number
+                              metadata:
+                                description: 'Can only be specified if VPC flow logging
+                                  for this subnetwork is enabled. Configures whether
+                                  metadata fields should be added to the reported
+                                  VPC flow logs. Default value: "INCLUDE_ALL_METADATA"
+                                  Possible values: ["EXCLUDE_ALL_METADATA", "INCLUDE_ALL_METADATA",
+                                  "CUSTOM_METADATA"].'
+                                type: string
+                              metadataFields:
+                                description: List of metadata fields that should be
+                                  added to reported logs. Can only be specified if
+                                  VPC flow logs for this subnetwork is enabled and
+                                  "metadata" is set to CUSTOM_METADATA.
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          networkRef:
+                            description: The network this subnet belongs to. Only
+                              networks that are in the distributed mode can have subnetworks.
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          privateIpGoogleAccess:
+                            description: When enabled, VMs in this subnetwork without
+                              external IP addresses can access Google APIs and services
+                              by using Private Google Access.
+                            type: boolean
+                          privateIpv6GoogleAccess:
+                            description: The private IPv6 google access type for the
+                              VMs in this subnet.
+                            type: string
+                          purpose:
+                            description: "Immutable. The purpose of the resource.
+                              A subnetwork with purpose set to INTERNAL_HTTPS_LOAD_BALANCER
+                              is a user-created subnetwork that is reserved for Internal
+                              HTTP(S) Load Balancing. \n If set to INTERNAL_HTTPS_LOAD_BALANCER
+                              you must also set the 'role' field."
+                            type: string
+                          region:
+                            description: Immutable. The GCP region for this subnetwork.
+                            type: string
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          role:
+                            description: 'The role of subnetwork. Currently, this
+                              field is only used when purpose = INTERNAL_HTTPS_LOAD_BALANCER.
+                              The value can be set to ACTIVE or BACKUP. An ACTIVE
+                              subnetwork is one that is currently being used for Internal
+                              HTTP(S) Load Balancing. A BACKUP subnetwork is one that
+                              is ready to be promoted to ACTIVE or is currently draining.
+                              Possible values: ["ACTIVE", "BACKUP"].'
+                            type: string
+                          secondaryIpRange:
+                            items:
+                              properties:
+                                ipCidrRange:
+                                  description: The range of IP addresses belonging
+                                    to this subnetwork secondary range. Provide this
+                                    property when you create the subnetwork. Ranges
+                                    must be unique and non-overlapping with all primary
+                                    and secondary IP ranges within a network. Only
+                                    IPv4 is supported.
+                                  type: string
+                                rangeName:
+                                  description: The name associated with this subnetwork
+                                    secondary range, used when adding an alias IP
+                                    range to a VM instance. The name must be 1-63
+                                    characters long, and comply with RFC1035. The
+                                    name must be unique within the subnetwork.
+                                  type: string
+                              required:
+                              - ipCidrRange
+                              - rangeName
+                              type: object
+                            type: array
+                          stackType:
+                            description: 'The stack type for this subnet to identify
+                              whether the IPv6 feature is enabled or not. If not specified
+                              IPV4_ONLY will be used. Possible values: ["IPV4_ONLY",
+                              "IPV4_IPV6"].'
+                            type: string
+                        required:
+                        - ipCidrRange
+                        - networkRef
+                        - region
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ComputeSubnetwork's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          creationTimestamp:
+                            description: Creation timestamp in RFC3339 text format.
+                            type: string
+                          externalIpv6Prefix:
+                            description: The range of external IPv6 addresses that
+                              are owned by this subnetwork.
+                            type: string
+                          fingerprint:
+                            description: DEPRECATED. This field is not useful for
+                              users, and has been removed as an output. Fingerprint
+                              of this resource. This field is used internally during
+                              updates of this resource.
+                            type: string
+                          gatewayAddress:
+                            description: The gateway address for default routes to
+                              reach destination addresses outside this subnetwork.
+                            type: string
+                          ipv6CidrRange:
+                            description: The range of internal IPv6 addresses that
+                              are owned by this subnetwork.
+                            type: string
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          selfLink:
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              container:
+                description: Container is a nested struct for gcp container resources
+                properties:
+                  containerCluster:
+                    description: ContainerCluster is the Schema for the container
+                      API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          addonsConfig:
+                            description: The configuration for addons supported by
+                              GKE.
+                            properties:
+                              cloudrunConfig:
+                                description: The status of the CloudRun addon. It
+                                  is disabled by default. Set disabled = false to
+                                  enable.
+                                properties:
+                                  disabled:
+                                    type: boolean
+                                  loadBalancerType:
+                                    type: string
+                                required:
+                                - disabled
+                                type: object
+                              configConnectorConfig:
+                                description: The of the Config Connector addon.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              dnsCacheConfig:
+                                description: The status of the NodeLocal DNSCache
+                                  addon. It is disabled by default. Set enabled =
+                                  true to enable.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              gcePersistentDiskCsiDriverConfig:
+                                description: Whether this cluster should enable the
+                                  Google Compute Engine Persistent Disk Container
+                                  Storage Interface (CSI) Driver. Defaults to disabled;
+                                  set enabled = true to enable.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              gcpFilestoreCsiDriverConfig:
+                                description: The status of the Filestore CSI driver
+                                  addon, which allows the usage of filestore instance
+                                  as volumes. Defaults to disabled; set enabled =
+                                  true to enable.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              gkeBackupAgentConfig:
+                                description: The status of the Backup for GKE Agent
+                                  addon. It is disabled by default. Set enabled =
+                                  true to enable.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              horizontalPodAutoscaling:
+                                description: The status of the Horizontal Pod Autoscaling
+                                  addon, which increases or decreases the number of
+                                  replica pods a replication controller has based
+                                  on the resource usage of the existing pods. It ensures
+                                  that a Heapster pod is running in the cluster, which
+                                  is also used by the Cloud Monitoring service. It
+                                  is enabled by default; set disabled = true to disable.
+                                properties:
+                                  disabled:
+                                    type: boolean
+                                required:
+                                - disabled
+                                type: object
+                              httpLoadBalancing:
+                                description: The status of the HTTP (L7) load balancing
+                                  controller addon, which makes it easy to set up
+                                  HTTP load balancers for services in a cluster. It
+                                  is enabled by default; set disabled = true to disable.
+                                properties:
+                                  disabled:
+                                    type: boolean
+                                required:
+                                - disabled
+                                type: object
+                              istioConfig:
+                                description: The status of the Istio addon.
+                                properties:
+                                  auth:
+                                    description: The authentication type between services
+                                      in Istio. Available options include AUTH_MUTUAL_TLS.
+                                    type: string
+                                  disabled:
+                                    description: The status of the Istio addon, which
+                                      makes it easy to set up Istio for services in
+                                      a cluster. It is disabled by default. Set disabled
+                                      = false to enable.
+                                    type: boolean
+                                required:
+                                - disabled
+                                type: object
+                              kalmConfig:
+                                description: Configuration for the KALM addon, which
+                                  manages the lifecycle of k8s. It is disabled by
+                                  default; Set enabled = true to enable.
+                                properties:
+                                  enabled:
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              networkPolicyConfig:
+                                description: Whether we should enable the network
+                                  policy addon for the master. This must be enabled
+                                  in order to enable network policy for the nodes.
+                                  To enable this, you must also define a network_policy
+                                  block, otherwise nothing will happen. It can only
+                                  be disabled if the nodes already do not have network
+                                  policies enabled. Defaults to disabled; set disabled
+                                  = false to enable.
+                                properties:
+                                  disabled:
+                                    type: boolean
+                                required:
+                                - disabled
+                                type: object
+                            type: object
+                          authenticatorGroupsConfig:
+                            description: Immutable. Configuration for the Google Groups
+                              for GKE feature.
+                            properties:
+                              securityGroup:
+                                description: Immutable. The name of the RBAC security
+                                  group for use with Google security groups in Kubernetes
+                                  RBAC. Group name must be in format gke-security-groups@yourdomain.com.
+                                type: string
+                            required:
+                            - securityGroup
+                            type: object
+                          clusterAutoscaling:
+                            description: Per-cluster configuration of Node Auto-Provisioning
+                              with Cluster Autoscaler to automatically adjust the
+                              size of the cluster and create/delete node pools based
+                              on the current needs of the cluster's workload. See
+                              the guide to using Node Auto-Provisioning for more details.
+                            properties:
+                              autoProvisioningDefaults:
+                                description: Contains defaults for a node pool created
+                                  by NAP.
+                                properties:
+                                  imageType:
+                                    description: The default image type used by NAP
+                                      once a new node pool is being created.
+                                    type: string
+                                  minCpuPlatform:
+                                    description: Minimum CPU platform to be used by
+                                      this instance. The instance may be scheduled
+                                      on the specified or newer CPU platform. Applicable
+                                      values are the friendly names of CPU platforms,
+                                      such as Intel Haswell.
+                                    type: string
+                                  oauthScopes:
+                                    description: Scopes that are used by NAP when
+                                      creating node pools.
+                                    items:
+                                      type: string
+                                    type: array
+                                  serviceAccountRef:
+                                    properties:
+                                      external:
+                                        description: The external name of the referenced
+                                          resource
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More
+                                          info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                    type: object
+                                type: object
+                              autoscalingProfile:
+                                description: Configuration options for the Autoscaling
+                                  profile feature, which lets you choose whether the
+                                  cluster autoscaler should optimize for resource
+                                  utilization or resource availability when deciding
+                                  to remove nodes from a cluster. Can be BALANCED
+                                  or OPTIMIZE_UTILIZATION. Defaults to BALANCED.
+                                type: string
+                              enabled:
+                                description: Whether node auto-provisioning is enabled.
+                                  Resource limits for cpu and memory must be defined
+                                  to enable node auto-provisioning.
+                                type: boolean
+                              resourceLimits:
+                                description: Global constraints for machine resources
+                                  in the cluster. Configuring the cpu and memory types
+                                  is required if node auto-provisioning is enabled.
+                                  These limits will apply to node pool autoscaling
+                                  in addition to node auto-provisioning.
+                                items:
+                                  properties:
+                                    maximum:
+                                      description: Maximum amount of the resource
+                                        in the cluster.
+                                      type: integer
+                                    minimum:
+                                      description: Minimum amount of the resource
+                                        in the cluster.
+                                      type: integer
+                                    resourceType:
+                                      description: The type of the resource. For example,
+                                        cpu and memory. See the guide to using Node
+                                        Auto-Provisioning for a list of types.
+                                      type: string
+                                  required:
+                                  - resourceType
+                                  type: object
+                                type: array
+                            required:
+                            - enabled
+                            type: object
+                          clusterIpv4Cidr:
+                            description: Immutable. The IP address range of the Kubernetes
+                              pods in this cluster in CIDR notation (e.g. 10.96.0.0/14).
+                              Leave blank to have one automatically chosen or specify
+                              a /14 block in 10.0.0.0/8. This field will only work
+                              for routes-based clusters, where ip_allocation_policy
+                              is not defined.
+                            type: string
+                          clusterTelemetry:
+                            description: Telemetry integration for the cluster.
+                            properties:
+                              type:
+                                description: Type of the integration.
+                                type: string
+                            required:
+                            - type
+                            type: object
+                          confidentialNodes:
+                            description: 'Immutable. Configuration for the confidential
+                              nodes feature, which makes nodes run on confidential
+                              VMs. Warning: This configuration can''t be changed (or
+                              added/removed) after cluster creation without deleting
+                              and recreating the entire cluster.'
+                            properties:
+                              enabled:
+                                description: Immutable. Whether Confidential Nodes
+                                  feature is enabled for all nodes in this cluster.
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          databaseEncryption:
+                            description: 'Application-layer Secrets Encryption settings.
+                              The object format is {state = string, key_name = string}.
+                              Valid values of state are: "ENCRYPTED"; "DECRYPTED".
+                              key_name is the name of a CloudKMS key.'
+                            properties:
+                              keyName:
+                                description: The key to use to encrypt/decrypt secrets.
+                                type: string
+                              state:
+                                description: ENCRYPTED or DECRYPTED.
+                                type: string
+                            required:
+                            - state
+                            type: object
+                          datapathProvider:
+                            description: The desired datapath provider for this cluster.
+                              By default, uses the IPTables-based kube-proxy implementation.
+                            type: string
+                          defaultMaxPodsPerNode:
+                            description: Immutable. The default maximum number of
+                              pods per node in this cluster. This doesn't work on
+                              "routes-based" clusters, clusters that don't have IP
+                              Aliasing enabled.
+                            type: integer
+                          defaultSnatStatus:
+                            description: Whether the cluster disables default in-node
+                              sNAT rules. In-node sNAT rules will be disabled when
+                              defaultSnatStatus is disabled.
+                            properties:
+                              disabled:
+                                description: When disabled is set to false, default
+                                  IP masquerade rules will be applied to the nodes
+                                  to prevent sNAT on cluster internal traffic.
+                                type: boolean
+                            required:
+                            - disabled
+                            type: object
+                          description:
+                            description: Immutable.  Description of the cluster.
+                            type: string
+                          dnsConfig:
+                            description: Immutable. Configuration for Cloud DNS for
+                              Kubernetes Engine.
+                            properties:
+                              clusterDns:
+                                description: Which in-cluster DNS provider should
+                                  be used.
+                                type: string
+                              clusterDnsDomain:
+                                description: The suffix used for all cluster service
+                                  records.
+                                type: string
+                              clusterDnsScope:
+                                description: The scope of access to cluster DNS records.
+                                type: string
+                            type: object
+                          enableAutopilot:
+                            description: Immutable. Enable Autopilot for this cluster.
+                            type: boolean
+                          enableBinaryAuthorization:
+                            description: Enable Binary Authorization for this cluster.
+                              If enabled, all container images will be validated by
+                              Google Binary Authorization.
+                            type: boolean
+                          enableIntranodeVisibility:
+                            description: Whether Intra-node visibility is enabled
+                              for this cluster. This makes same node pod to pod traffic
+                              visible for VPC network.
+                            type: boolean
+                          enableKubernetesAlpha:
+                            description: Immutable. Whether to enable Kubernetes Alpha
+                              features for this cluster. Note that when this option
+                              is enabled, the cluster cannot be upgraded and will
+                              be automatically deleted after 30 days.
+                            type: boolean
+                          enableL4IlbSubsetting:
+                            description: Whether L4ILB Subsetting is enabled for this
+                              cluster.
+                            type: boolean
+                          enableLegacyAbac:
+                            description: Whether the ABAC authorizer is enabled for
+                              this cluster. When enabled, identities in the system,
+                              including service accounts, nodes, and controllers,
+                              will have statically granted permissions beyond those
+                              provided by the RBAC configuration or IAM. Defaults
+                              to false.
+                            type: boolean
+                          enableShieldedNodes:
+                            description: Enable Shielded Nodes features on all nodes
+                              in this cluster. Defaults to true.
+                            type: boolean
+                          enableTpu:
+                            description: Immutable. Whether to enable Cloud TPU resources
+                              in this cluster.
+                            type: boolean
+                          identityServiceConfig:
+                            description: Configuration for Identity Service which
+                              allows customers to use external identity providers
+                              with the K8S API.
+                            properties:
+                              enabled:
+                                description: Whether to enable the Identity Service
+                                  component.
+                                type: boolean
+                            type: object
+                          initialNodeCount:
+                            description: Immutable. The number of nodes to create
+                              in this cluster's default node pool. In regional or
+                              multi-zonal clusters, this is the number of nodes per
+                              zone. Must be set if node_pool is not set. If you're
+                              using google_container_node_pool objects with no default
+                              node pool, you'll need to set this to a value of at
+                              least 1, alongside setting remove_default_node_pool
+                              to true.
+                            type: integer
+                          ipAllocationPolicy:
+                            description: Immutable. Configuration of cluster IP allocation
+                              for VPC-native clusters. Adding this block enables IP
+                              aliasing, making the cluster VPC-native instead of routes-based.
+                            properties:
+                              clusterIpv4CidrBlock:
+                                description: Immutable. The IP address range for the
+                                  cluster pod IPs. Set to blank to have a range chosen
+                                  with the default size. Set to /netmask (e.g. /14)
+                                  to have a range chosen with a specific netmask.
+                                  Set to a CIDR notation (e.g. 10.96.0.0/14) from
+                                  the RFC-1918 private networks (e.g. 10.0.0.0/8,
+                                  172.16.0.0/12, 192.168.0.0/16) to pick a specific
+                                  range to use.
+                                type: string
+                              clusterSecondaryRangeName:
+                                description: Immutable. The name of the existing secondary
+                                  range in the cluster's subnetwork to use for pod
+                                  IP addresses. Alternatively, cluster_ipv4_cidr_block
+                                  can be used to automatically create a GKE-managed
+                                  one.
+                                type: string
+                              servicesIpv4CidrBlock:
+                                description: Immutable. The IP address range of the
+                                  services IPs in this cluster. Set to blank to have
+                                  a range chosen with the default size. Set to /netmask
+                                  (e.g. /14) to have a range chosen with a specific
+                                  netmask. Set to a CIDR notation (e.g. 10.96.0.0/14)
+                                  from the RFC-1918 private networks (e.g. 10.0.0.0/8,
+                                  172.16.0.0/12, 192.168.0.0/16) to pick a specific
+                                  range to use.
+                                type: string
+                              servicesSecondaryRangeName:
+                                description: Immutable. The name of the existing secondary
+                                  range in the cluster's subnetwork to use for service
+                                  ClusterIPs. Alternatively, services_ipv4_cidr_block
+                                  can be used to automatically create a GKE-managed
+                                  one.
+                                type: string
+                            type: object
+                          location:
+                            description: Immutable. The location (region or zone)
+                              in which the cluster master will be created, as well
+                              as the default node location. If you specify a zone
+                              (such as us-central1-a), the cluster will be a zonal
+                              cluster with a single cluster master. If you specify
+                              a region (such as us-west1), the cluster will be a regional
+                              cluster with multiple masters spread across zones in
+                              the region, and with default node locations in those
+                              zones as well.
+                            type: string
+                          loggingConfig:
+                            description: Logging configuration for the cluster.
+                            properties:
+                              enableComponents:
+                                description: GKE components exposing logs. Valid values
+                                  include SYSTEM_COMPONENTS and WORKLOADS.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - enableComponents
+                            type: object
+                          loggingService:
+                            description: The logging service that the cluster should
+                              write logs to. Available options include logging.googleapis.com(Legacy
+                              Stackdriver), logging.googleapis.com/kubernetes(Stackdriver
+                              Kubernetes Engine Logging), and none. Defaults to logging.googleapis.com/kubernetes.
+                            type: string
+                          maintenancePolicy:
+                            description: The maintenance policy to use for the cluster.
+                            properties:
+                              dailyMaintenanceWindow:
+                                description: 'Time window specified for daily maintenance
+                                  operations. Specify start_time in RFC3339 format
+                                  "HH:MM”, where HH : [00-23] and MM : [00-59] GMT.'
+                                properties:
+                                  duration:
+                                    type: string
+                                  startTime:
+                                    type: string
+                                required:
+                                - startTime
+                                type: object
+                              maintenanceExclusion:
+                                description: Exceptions to maintenance window. Non-emergency
+                                  maintenance should not occur in these windows.
+                                items:
+                                  properties:
+                                    endTime:
+                                      type: string
+                                    exclusionName:
+                                      type: string
+                                    exclusionOptions:
+                                      description: Maintenance exclusion related options.
+                                      properties:
+                                        scope:
+                                          description: The scope of automatic upgrades
+                                            to restrict in the exclusion window.
+                                          type: string
+                                      required:
+                                      - scope
+                                      type: object
+                                    startTime:
+                                      type: string
+                                  required:
+                                  - endTime
+                                  - exclusionName
+                                  - startTime
+                                  type: object
+                                type: array
+                              recurringWindow:
+                                description: Time window for recurring maintenance
+                                  operations.
+                                properties:
+                                  endTime:
+                                    type: string
+                                  recurrence:
+                                    type: string
+                                  startTime:
+                                    type: string
+                                required:
+                                - endTime
+                                - recurrence
+                                - startTime
+                                type: object
+                            type: object
+                          masterAuth:
+                            description: DEPRECATED. Basic authentication was removed
+                              for GKE cluster versions >= 1.19. The authentication
+                              information for accessing the Kubernetes master. Some
+                              values in this block are only returned by the API if
+                              your service account has permission to get credentials
+                              for your GKE cluster. If you see an unexpected diff
+                              unsetting your client cert, ensure you have the container.clusters.getCredentials
+                              permission.
+                            properties:
+                              clientCertificate:
+                                description: Base64 encoded public certificate used
+                                  by clients to authenticate to the cluster endpoint.
+                                type: string
+                              clientCertificateConfig:
+                                description: Immutable. Whether client certificate
+                                  authorization is enabled for this cluster.
+                                properties:
+                                  issueClientCertificate:
+                                    description: Immutable. Whether client certificate
+                                      authorization is enabled for this cluster.
+                                    type: boolean
+                                required:
+                                - issueClientCertificate
+                                type: object
+                              clientKey:
+                                description: Base64 encoded private key used by clients
+                                  to authenticate to the cluster endpoint.
+                                type: string
+                              clusterCaCertificate:
+                                description: Base64 encoded public certificate that
+                                  is the root of trust for the cluster.
+                                type: string
+                              password:
+                                description: The password to use for HTTP basic authentication
+                                  when accessing the Kubernetes master endpoint.
+                                properties:
+                                  value:
+                                    description: Value of the field. Cannot be used
+                                      if 'valueFrom' is specified.
+                                    type: string
+                                  valueFrom:
+                                    description: Source for the field's value. Cannot
+                                      be used if 'value' is specified.
+                                    properties:
+                                      secretKeyRef:
+                                        description: Reference to a value with the
+                                          given key in the given Secret in the resource's
+                                          namespace.
+                                        properties:
+                                          external:
+                                            description: The external name of the
+                                              referenced resource
+                                            type: string
+                                          name:
+                                            description: 'Name of the referent. More
+                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                            type: string
+                                          namespace:
+                                            description: 'Namespace of the referent.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                            type: string
+                                        type: object
+                                    type: object
+                                type: object
+                              username:
+                                description: The username to use for HTTP basic authentication
+                                  when accessing the Kubernetes master endpoint. If
+                                  not present basic auth will be disabled.
+                                type: string
+                            type: object
+                          masterAuthorizedNetworksConfig:
+                            description: The desired configuration options for master
+                              authorized networks. Omit the nested cidr_blocks attribute
+                              to disallow external access (except the cluster node
+                              IPs, which GKE automatically whitelists).
+                            properties:
+                              cidrBlocks:
+                                description: External networks that can access the
+                                  Kubernetes cluster master through HTTPS.
+                                items:
+                                  properties:
+                                    cidrBlock:
+                                      description: External network that can access
+                                        Kubernetes master through HTTPS. Must be specified
+                                        in CIDR notation.
+                                      type: string
+                                    displayName:
+                                      description: Field for users to identify CIDR
+                                        blocks.
+                                      type: string
+                                  required:
+                                  - cidrBlock
+                                  type: object
+                                type: array
+                            type: object
+                          minMasterVersion:
+                            description: The minimum version of the master. GKE will
+                              auto-update the master to new versions, so this does
+                              not guarantee the current master version--use the read-only
+                              master_version field to obtain that. If unset, the cluster's
+                              version will be set by GKE to the version of the most
+                              recent official release (which is not necessarily the
+                              latest version).
+                            type: string
+                          monitoringConfig:
+                            description: Monitoring configuration for the cluster.
+                            properties:
+                              enableComponents:
+                                description: GKE components exposing metrics. Valid
+                                  values include SYSTEM_COMPONENTS and WORKLOADS.
+                                items:
+                                  type: string
+                                type: array
+                            required:
+                            - enableComponents
+                            type: object
+                          monitoringService:
+                            description: The monitoring service that the cluster should
+                              write metrics to. Automatically send metrics from pods
+                              in the cluster to the Google Cloud Monitoring API. VM
+                              metrics will be collected by Google Compute Engine regardless
+                              of this setting Available options include monitoring.googleapis.com(Legacy
+                              Stackdriver), monitoring.googleapis.com/kubernetes(Stackdriver
+                              Kubernetes Engine Monitoring), and none. Defaults to
+                              monitoring.googleapis.com/kubernetes.
+                            type: string
+                          networkPolicy:
+                            description: Configuration options for the NetworkPolicy
+                              feature.
+                            properties:
+                              enabled:
+                                description: Whether network policy is enabled on
+                                  the cluster.
+                                type: boolean
+                              provider:
+                                description: The selected network policy provider.
+                                  Defaults to PROVIDER_UNSPECIFIED.
+                                type: string
+                            required:
+                            - enabled
+                            type: object
+                          networkRef:
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          networkingMode:
+                            description: Immutable. Determines whether alias IPs or
+                              routes will be used for pod IPs in the cluster.
+                            type: string
+                          nodeConfig:
+                            description: Immutable. The configuration of the nodepool.
+                            properties:
+                              bootDiskKMSCryptoKeyRef:
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              diskSizeGb:
+                                description: Immutable. Size of the disk attached
+                                  to each node, specified in GB. The smallest allowed
+                                  disk size is 10GB.
+                                type: integer
+                              diskType:
+                                description: Immutable. Type of the disk attached
+                                  to each node. Such as pd-standard, pd-balanced or
+                                  pd-ssd.
+                                type: string
+                              ephemeralStorageConfig:
+                                description: Immutable. Parameters for the ephemeral
+                                  storage filesystem.
+                                properties:
+                                  localSsdCount:
+                                    description: Immutable. Number of local SSDs to
+                                      use to back ephemeral storage. Uses NVMe interfaces.
+                                      Each local SSD is 375 GB in size.
+                                    type: integer
+                                required:
+                                - localSsdCount
+                                type: object
+                              gcfsConfig:
+                                description: Immutable. GCFS configuration for this
+                                  node.
+                                properties:
+                                  enabled:
+                                    description: Immutable. Whether or not GCFS is
+                                      enabled.
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              guestAccelerator:
+                                description: Immutable. List of the type and count
+                                  of accelerator cards attached to the instance.
+                                items:
+                                  properties:
+                                    count:
+                                      description: Immutable. The number of the accelerator
+                                        cards exposed to an instance.
+                                      type: integer
+                                    gpuPartitionSize:
+                                      description: Immutable. Size of partitions to
+                                        create on the GPU. Valid values are described
+                                        in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).
+                                      type: string
+                                    type:
+                                      description: Immutable. The accelerator type
+                                        resource name.
+                                      type: string
+                                  required:
+                                  - count
+                                  - type
+                                  type: object
+                                type: array
+                              gvnic:
+                                description: Immutable. Enable or disable gvnic in
+                                  the node pool.
+                                properties:
+                                  enabled:
+                                    description: Immutable. Whether or not gvnic is
+                                      enabled.
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              imageType:
+                                description: The image type to use for this node.
+                                  Note that for a given image type, the latest version
+                                  of it will be used.
+                                type: string
+                              kubeletConfig:
+                                description: Node kubelet configs.
+                                properties:
+                                  cpuCfsQuota:
+                                    description: Enable CPU CFS quota enforcement
+                                      for containers that specify CPU limits.
+                                    type: boolean
+                                  cpuCfsQuotaPeriod:
+                                    description: Set the CPU CFS quota period value
+                                      'cpu.cfs_period_us'.
+                                    type: string
+                                  cpuManagerPolicy:
+                                    description: Control the CPU management policy
+                                      on the node.
+                                    type: string
+                                required:
+                                - cpuManagerPolicy
+                                type: object
+                              labels:
+                                additionalProperties:
+                                  type: string
+                                description: Immutable. The map of Kubernetes labels
+                                  (key/value pairs) to be applied to each node. These
+                                  will added in addition to any default label(s) that
+                                  Kubernetes may apply to the node.
+                                type: object
+                              linuxNodeConfig:
+                                description: Parameters that can be configured on
+                                  Linux nodes.
+                                properties:
+                                  sysctls:
+                                    additionalProperties:
+                                      type: string
+                                    description: The Linux kernel parameters to be
+                                      applied to the nodes and all pods running on
+                                      the nodes.
+                                    type: object
+                                required:
+                                - sysctls
+                                type: object
+                              localSsdCount:
+                                description: Immutable. The number of local SSD disks
+                                  to be attached to the node.
+                                type: integer
+                              machineType:
+                                description: Immutable. The name of a Google Compute
+                                  Engine machine type.
+                                type: string
+                              metadata:
+                                additionalProperties:
+                                  type: string
+                                description: Immutable. The metadata key/value pairs
+                                  assigned to instances in the cluster.
+                                type: object
+                              minCpuPlatform:
+                                description: Immutable. Minimum CPU platform to be
+                                  used by this instance. The instance may be scheduled
+                                  on the specified or newer CPU platform.
+                                type: string
+                              nodeGroupRef:
+                                description: Immutable. Setting this field will assign
+                                  instances of this pool to run on the specified node
+                                  group. This is useful for running workloads on sole
+                                  tenant nodes.
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              oauthScopes:
+                                description: Immutable. The set of Google API scopes
+                                  to be made available on all of the node VMs.
+                                items:
+                                  type: string
+                                type: array
+                              preemptible:
+                                description: Immutable. Whether the nodes are created
+                                  as preemptible VM instances.
+                                type: boolean
+                              sandboxConfig:
+                                description: Immutable. Sandbox configuration for
+                                  this node.
+                                properties:
+                                  sandboxType:
+                                    description: Type of the sandbox to use for the
+                                      node (e.g. 'gvisor').
+                                    type: string
+                                required:
+                                - sandboxType
+                                type: object
+                              serviceAccountRef:
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              shieldedInstanceConfig:
+                                description: Immutable. Shielded Instance options.
+                                properties:
+                                  enableIntegrityMonitoring:
+                                    description: Immutable. Defines whether the instance
+                                      has integrity monitoring enabled.
+                                    type: boolean
+                                  enableSecureBoot:
+                                    description: Immutable. Defines whether the instance
+                                      has Secure Boot enabled.
+                                    type: boolean
+                                type: object
+                              spot:
+                                description: Immutable. Whether the nodes are created
+                                  as spot VM instances.
+                                type: boolean
+                              tags:
+                                description: Immutable. The list of instance tags
+                                  applied to all nodes.
+                                items:
+                                  type: string
+                                type: array
+                              taint:
+                                description: Immutable. List of Kubernetes taints
+                                  to be applied to each node.
+                                items:
+                                  properties:
+                                    effect:
+                                      description: Immutable. Effect for taint.
+                                      type: string
+                                    key:
+                                      description: Immutable. Key for taint.
+                                      type: string
+                                    value:
+                                      description: Immutable. Value for taint.
+                                      type: string
+                                  required:
+                                  - effect
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              workloadMetadataConfig:
+                                description: Immutable. The workload metadata configuration
+                                  for this node.
+                                properties:
+                                  mode:
+                                    description: Mode is the configuration for how
+                                      to expose metadata to workloads running on the
+                                      node.
+                                    type: string
+                                  nodeMetadata:
+                                    description: DEPRECATED. Deprecated in favor of
+                                      mode. NodeMetadata is the configuration for
+                                      how to expose metadata to the workloads running
+                                      on the node.
+                                    type: string
+                                type: object
+                            type: object
+                          nodeLocations:
+                            description: The list of zones in which the cluster's
+                              nodes are located. Nodes must be in the region of their
+                              regional cluster or in the same region as their cluster's
+                              zone for zonal clusters. If this is specified for a
+                              zonal cluster, omit the cluster's zone.
+                            items:
+                              type: string
+                            type: array
+                          nodeVersion:
+                            type: string
+                          notificationConfig:
+                            description: The notification config for sending cluster
+                              upgrade notifications.
+                            properties:
+                              pubsub:
+                                description: Notification config for Cloud Pub/Sub.
+                                properties:
+                                  enabled:
+                                    description: Whether or not the notification config
+                                      is enabled.
+                                    type: boolean
+                                  topicRef:
+                                    description: The PubSubTopic to send the notification
+                                      to.
+                                    properties:
+                                      external:
+                                        description: The external name of the referenced
+                                          resource
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More
+                                          info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                    type: object
+                                required:
+                                - enabled
+                                type: object
+                            required:
+                            - pubsub
+                            type: object
+                          podSecurityPolicyConfig:
+                            description: Configuration for the PodSecurityPolicy feature.
+                            properties:
+                              enabled:
+                                description: Enable the PodSecurityPolicy controller
+                                  for this cluster. If enabled, pods must be valid
+                                  under a PodSecurityPolicy to be created.
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          privateClusterConfig:
+                            description: Configuration for private clusters, clusters
+                              with private nodes.
+                            properties:
+                              enablePrivateEndpoint:
+                                description: Immutable. Enables the private cluster
+                                  feature, creating a private endpoint on the cluster.
+                                  In a private cluster, nodes only have RFC 1918 private
+                                  addresses and communicate with the master's private
+                                  endpoint via private networking.
+                                type: boolean
+                              enablePrivateNodes:
+                                description: Immutable. When true, the cluster's private
+                                  endpoint is used as the cluster endpoint and access
+                                  through the public endpoint is disabled. When false,
+                                  either endpoint can be used. This field only applies
+                                  to private clusters, when enable_private_nodes is
+                                  true.
+                                type: boolean
+                              masterGlobalAccessConfig:
+                                description: Controls cluster master global access
+                                  settings.
+                                properties:
+                                  enabled:
+                                    description: Whether the cluster master is accessible
+                                      globally or not.
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              masterIpv4CidrBlock:
+                                description: Immutable. The IP range in CIDR notation
+                                  to use for the hosted master network. This range
+                                  will be used for assigning private IP addresses
+                                  to the cluster master(s) and the ILB VIP. This range
+                                  must not overlap with any other ranges in use within
+                                  the cluster's network, and it must be a /28 subnet.
+                                  See Private Cluster Limitations for more details.
+                                  This field only applies to private clusters, when
+                                  enable_private_nodes is true.
+                                type: string
+                              peeringName:
+                                description: The name of the peering between this
+                                  cluster and the Google owned VPC.
+                                type: string
+                              privateEndpoint:
+                                description: The internal IP address of this cluster's
+                                  master endpoint.
+                                type: string
+                              publicEndpoint:
+                                description: The external IP address of this cluster's
+                                  master endpoint.
+                                type: string
+                            required:
+                            - enablePrivateEndpoint
+                            type: object
+                          privateIpv6GoogleAccess:
+                            description: The desired state of IPv6 connectivity to
+                              Google Services. By default, no private IPv6 access
+                              to or from Google Services (all access will be via IPv4).
+                            type: string
+                          releaseChannel:
+                            description: Configuration options for the Release channel
+                              feature, which provide more control over automatic upgrades
+                              of your GKE clusters. Note that removing this field
+                              from your config will not unenroll it. Instead, use
+                              the "UNSPECIFIED" channel.
+                            properties:
+                              channel:
+                                description: 'The selected release channel. Accepted
+                                  values are: * UNSPECIFIED: Not set. * RAPID: Weekly
+                                  upgrade cadence; Early testers and developers who
+                                  requires new features. * REGULAR: Multiple per month
+                                  upgrade cadence; Production users who need features
+                                  not yet offered in the Stable channel. * STABLE:
+                                  Every few months upgrade cadence; Production users
+                                  who need stability above all else, and for whom
+                                  frequent upgrades are too risky.'
+                                type: string
+                            required:
+                            - channel
+                            type: object
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          resourceUsageExportConfig:
+                            description: Configuration for the ResourceUsageExportConfig
+                              feature.
+                            properties:
+                              bigqueryDestination:
+                                description: Parameters for using BigQuery as the
+                                  destination of resource usage export.
+                                properties:
+                                  datasetId:
+                                    description: The ID of a BigQuery Dataset.
+                                    type: string
+                                required:
+                                - datasetId
+                                type: object
+                              enableNetworkEgressMetering:
+                                description: Whether to enable network egress metering
+                                  for this cluster. If enabled, a daemonset will be
+                                  created in the cluster to meter network egress traffic.
+                                type: boolean
+                              enableResourceConsumptionMetering:
+                                description: Whether to enable resource consumption
+                                  metering on this cluster. When enabled, a table
+                                  will be created in the resource export BigQuery
+                                  dataset to store resource consumption data. The
+                                  resulting table can be joined with the resource
+                                  usage table or with BigQuery billing export. Defaults
+                                  to true.
+                                type: boolean
+                            required:
+                            - bigqueryDestination
+                            type: object
+                          subnetworkRef:
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          verticalPodAutoscaling:
+                            description: Vertical Pod Autoscaling automatically adjusts
+                              the resources of pods controlled by it.
+                            properties:
+                              enabled:
+                                description: Enables vertical pod autoscaling.
+                                type: boolean
+                            required:
+                            - enabled
+                            type: object
+                          workloadIdentityConfig:
+                            description: Configuration for the use of Kubernetes Service
+                              Accounts in GCP IAM policies.
+                            properties:
+                              identityNamespace:
+                                description: DEPRECATED. This field will be removed
+                                  in a future major release as it has been deprecated
+                                  in the API. Use `workloadPool` instead; `workloadPool`
+                                  field will supersede this field. Enables workload
+                                  identity.
+                                type: string
+                              workloadPool:
+                                description: The workload pool to attach all Kubernetes
+                                  service accounts to.
+                                type: string
+                            type: object
+                        required:
+                        - location
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ContainerCluster's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          endpoint:
+                            description: The IP address of this cluster's Kubernetes
+                              master.
+                            type: string
+                          labelFingerprint:
+                            description: The fingerprint of the set of labels for
+                              this cluster.
+                            type: string
+                          masterVersion:
+                            description: The current version of the master in the
+                              cluster. This may be different than the min_master_version
+                              set in the config if the master has been updated by
+                              GKE.
+                            type: string
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          operation:
+                            type: string
+                          selfLink:
+                            description: Server-defined URL for the resource.
+                            type: string
+                          servicesIpv4Cidr:
+                            description: The IP address range of the Kubernetes services
+                              in this cluster, in CIDR notation (e.g. 1.2.3.4/29).
+                              Service addresses are typically put in the last /16
+                              from the container CIDR.
+                            type: string
+                          tpuIpv4CidrBlock:
+                            description: The IP address range of the Cloud TPUs in
+                              this cluster, in CIDR notation (e.g. 1.2.3.4/29).
+                            type: string
+                        type: object
+                    type: object
+                  containerNodePool:
+                    description: ContainerNodePool is the Schema for the container
+                      API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          autoscaling:
+                            description: Configuration required by cluster autoscaler
+                              to adjust the size of the node pool to the current cluster
+                              usage. To disable autoscaling, set minNodeCount and
+                              maxNodeCount to 0.
+                            properties:
+                              maxNodeCount:
+                                description: Maximum number of nodes in the NodePool.
+                                  Must be >= min_node_count.
+                                type: integer
+                              minNodeCount:
+                                description: Minimum number of nodes in the NodePool.
+                                  Must be >=0 and <= max_node_count.
+                                type: integer
+                            required:
+                            - maxNodeCount
+                            - minNodeCount
+                            type: object
+                          clusterRef:
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          initialNodeCount:
+                            description: Immutable. The initial number of nodes for
+                              the pool. In regional or multi-zonal clusters, this
+                              is the number of nodes per zone. Changing this will
+                              force recreation of the resource.
+                            type: integer
+                          location:
+                            description: Immutable. The location (region or zone)
+                              of the cluster.
+                            type: string
+                          management:
+                            description: Node management configuration, wherein auto-repair
+                              and auto-upgrade is configured.
+                            properties:
+                              autoRepair:
+                                description: Whether the nodes will be automatically
+                                  repaired.
+                                type: boolean
+                              autoUpgrade:
+                                description: Whether the nodes will be automatically
+                                  upgraded.
+                                type: boolean
+                            type: object
+                          maxPodsPerNode:
+                            description: Immutable. The maximum number of pods per
+                              node in this node pool. Note that this does not work
+                              on node pools which are "route-based" - that is, node
+                              pools belonging to clusters that do not have IP Aliasing
+                              enabled.
+                            type: integer
+                          namePrefix:
+                            description: Immutable. Creates a unique name for the
+                              node pool beginning with the specified prefix. Conflicts
+                              with name.
+                            type: string
+                          networkConfig:
+                            description: Networking configuration for this NodePool.
+                              If specified, it overrides the cluster-level defaults.
+                            properties:
+                              createPodRange:
+                                description: Immutable. Whether to create a new range
+                                  for pod IPs in this node pool. Defaults are provided
+                                  for pod_range and pod_ipv4_cidr_block if they are
+                                  not specified.
+                                type: boolean
+                              podIpv4CidrBlock:
+                                description: Immutable. The IP address range for pod
+                                  IPs in this node pool. Only applicable if create_pod_range
+                                  is true. Set to blank to have a range chosen with
+                                  the default size. Set to /netmask (e.g. /14) to
+                                  have a range chosen with a specific netmask. Set
+                                  to a CIDR notation (e.g. 10.96.0.0/14) to pick a
+                                  specific range to use.
+                                type: string
+                              podRange:
+                                description: Immutable. The ID of the secondary range
+                                  for pod IPs. If create_pod_range is true, this ID
+                                  is used for the new range. If create_pod_range is
+                                  false, uses an existing secondary range with this
+                                  ID.
+                                type: string
+                            required:
+                            - podRange
+                            type: object
+                          nodeConfig:
+                            description: Immutable. The configuration of the nodepool.
+                            properties:
+                              bootDiskKMSCryptoKeyRef:
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              diskSizeGb:
+                                description: Immutable. Size of the disk attached
+                                  to each node, specified in GB. The smallest allowed
+                                  disk size is 10GB.
+                                type: integer
+                              diskType:
+                                description: Immutable. Type of the disk attached
+                                  to each node. Such as pd-standard, pd-balanced or
+                                  pd-ssd.
+                                type: string
+                              ephemeralStorageConfig:
+                                description: Immutable. Parameters for the ephemeral
+                                  storage filesystem.
+                                properties:
+                                  localSsdCount:
+                                    description: Immutable. Number of local SSDs to
+                                      use to back ephemeral storage. Uses NVMe interfaces.
+                                      Each local SSD is 375 GB in size.
+                                    type: integer
+                                required:
+                                - localSsdCount
+                                type: object
+                              gcfsConfig:
+                                description: Immutable. GCFS configuration for this
+                                  node.
+                                properties:
+                                  enabled:
+                                    description: Immutable. Whether or not GCFS is
+                                      enabled.
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              guestAccelerator:
+                                description: Immutable. List of the type and count
+                                  of accelerator cards attached to the instance.
+                                items:
+                                  properties:
+                                    count:
+                                      description: Immutable. The number of the accelerator
+                                        cards exposed to an instance.
+                                      type: integer
+                                    gpuPartitionSize:
+                                      description: Immutable. Size of partitions to
+                                        create on the GPU. Valid values are described
+                                        in the NVIDIA mig user guide (https://docs.nvidia.com/datacenter/tesla/mig-user-guide/#partitioning).
+                                      type: string
+                                    type:
+                                      description: Immutable. The accelerator type
+                                        resource name.
+                                      type: string
+                                  required:
+                                  - count
+                                  - type
+                                  type: object
+                                type: array
+                              gvnic:
+                                description: Immutable. Enable or disable gvnic in
+                                  the node pool.
+                                properties:
+                                  enabled:
+                                    description: Immutable. Whether or not gvnic is
+                                      enabled.
+                                    type: boolean
+                                required:
+                                - enabled
+                                type: object
+                              imageType:
+                                description: The image type to use for this node.
+                                  Note that for a given image type, the latest version
+                                  of it will be used.
+                                type: string
+                              kubeletConfig:
+                                description: Node kubelet configs.
+                                properties:
+                                  cpuCfsQuota:
+                                    description: Enable CPU CFS quota enforcement
+                                      for containers that specify CPU limits.
+                                    type: boolean
+                                  cpuCfsQuotaPeriod:
+                                    description: Set the CPU CFS quota period value
+                                      'cpu.cfs_period_us'.
+                                    type: string
+                                  cpuManagerPolicy:
+                                    description: Control the CPU management policy
+                                      on the node.
+                                    type: string
+                                required:
+                                - cpuManagerPolicy
+                                type: object
+                              labels:
+                                additionalProperties:
+                                  type: string
+                                description: Immutable. The map of Kubernetes labels
+                                  (key/value pairs) to be applied to each node. These
+                                  will added in addition to any default label(s) that
+                                  Kubernetes may apply to the node.
+                                type: object
+                              linuxNodeConfig:
+                                description: Parameters that can be configured on
+                                  Linux nodes.
+                                properties:
+                                  sysctls:
+                                    additionalProperties:
+                                      type: string
+                                    description: The Linux kernel parameters to be
+                                      applied to the nodes and all pods running on
+                                      the nodes.
+                                    type: object
+                                required:
+                                - sysctls
+                                type: object
+                              localSsdCount:
+                                description: Immutable. The number of local SSD disks
+                                  to be attached to the node.
+                                type: integer
+                              machineType:
+                                description: Immutable. The name of a Google Compute
+                                  Engine machine type.
+                                type: string
+                              metadata:
+                                additionalProperties:
+                                  type: string
+                                description: Immutable. The metadata key/value pairs
+                                  assigned to instances in the cluster.
+                                type: object
+                              minCpuPlatform:
+                                description: Immutable. Minimum CPU platform to be
+                                  used by this instance. The instance may be scheduled
+                                  on the specified or newer CPU platform.
+                                type: string
+                              nodeGroupRef:
+                                description: Immutable. Setting this field will assign
+                                  instances of this pool to run on the specified node
+                                  group. This is useful for running workloads on sole
+                                  tenant nodes.
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              oauthScopes:
+                                description: Immutable. The set of Google API scopes
+                                  to be made available on all of the node VMs.
+                                items:
+                                  type: string
+                                type: array
+                              preemptible:
+                                description: Immutable. Whether the nodes are created
+                                  as preemptible VM instances.
+                                type: boolean
+                              sandboxConfig:
+                                description: Immutable. Sandbox configuration for
+                                  this node.
+                                properties:
+                                  sandboxType:
+                                    description: Type of the sandbox to use for the
+                                      node (e.g. 'gvisor').
+                                    type: string
+                                required:
+                                - sandboxType
+                                type: object
+                              serviceAccountRef:
+                                properties:
+                                  external:
+                                    description: The external name of the referenced
+                                      resource
+                                    type: string
+                                  name:
+                                    description: 'Name of the referent. More info:
+                                      https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                    type: string
+                                  namespace:
+                                    description: 'Namespace of the referent. More
+                                      info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                    type: string
+                                type: object
+                              shieldedInstanceConfig:
+                                description: Immutable. Shielded Instance options.
+                                properties:
+                                  enableIntegrityMonitoring:
+                                    description: Immutable. Defines whether the instance
+                                      has integrity monitoring enabled.
+                                    type: boolean
+                                  enableSecureBoot:
+                                    description: Immutable. Defines whether the instance
+                                      has Secure Boot enabled.
+                                    type: boolean
+                                type: object
+                              spot:
+                                description: Immutable. Whether the nodes are created
+                                  as spot VM instances.
+                                type: boolean
+                              tags:
+                                description: Immutable. The list of instance tags
+                                  applied to all nodes.
+                                items:
+                                  type: string
+                                type: array
+                              taint:
+                                description: Immutable. List of Kubernetes taints
+                                  to be applied to each node.
+                                items:
+                                  properties:
+                                    effect:
+                                      description: Immutable. Effect for taint.
+                                      type: string
+                                    key:
+                                      description: Immutable. Key for taint.
+                                      type: string
+                                    value:
+                                      description: Immutable. Value for taint.
+                                      type: string
+                                  required:
+                                  - effect
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              workloadMetadataConfig:
+                                description: The workload metadata configuration for
+                                  this node.
+                                properties:
+                                  mode:
+                                    description: Mode is the configuration for how
+                                      to expose metadata to workloads running on the
+                                      node.
+                                    type: string
+                                  nodeMetadata:
+                                    description: DEPRECATED. Deprecated in favor of
+                                      mode. NodeMetadata is the configuration for
+                                      how to expose metadata to the workloads running
+                                      on the node.
+                                    type: string
+                                type: object
+                            type: object
+                          nodeCount:
+                            description: The number of nodes per instance group. This
+                              field can be used to update the number of nodes per
+                              instance group but should not be used alongside autoscaling.
+                            type: integer
+                          nodeLocations:
+                            description: The list of zones in which the node pool's
+                              nodes should be located. Nodes must be in the region
+                              of their regional cluster or in the same region as their
+                              cluster's zone for zonal clusters. If unspecified, the
+                              cluster-level node_locations will be used.
+                            items:
+                              type: string
+                            type: array
+                          placementPolicy:
+                            description: Immutable. Specifies the node placement policy.
+                            properties:
+                              type:
+                                description: Type defines the type of placement policy.
+                                type: string
+                            required:
+                            - type
+                            type: object
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          upgradeSettings:
+                            description: Specify node upgrade settings to change how
+                              many nodes GKE attempts to upgrade at once. The number
+                              of nodes upgraded simultaneously is the sum of max_surge
+                              and max_unavailable. The maximum number of nodes upgraded
+                              simultaneously is limited to 20.
+                            properties:
+                              maxSurge:
+                                description: The number of additional nodes that can
+                                  be added to the node pool during an upgrade. Increasing
+                                  max_surge raises the number of nodes that can be
+                                  upgraded simultaneously. Can be set to 0 or greater.
+                                type: integer
+                              maxUnavailable:
+                                description: The number of nodes that can be simultaneously
+                                  unavailable during an upgrade. Increasing max_unavailable
+                                  raises the number of nodes that can be upgraded
+                                  in parallel. Can be set to 0 or greater.
+                                type: integer
+                            required:
+                            - maxSurge
+                            - maxUnavailable
+                            type: object
+                          version:
+                            type: string
+                        required:
+                        - clusterRef
+                        - location
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the ContainerNodePool's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          instanceGroupUrls:
+                            description: The resource URLs of the managed instance
+                              groups associated with this node pool.
+                            items:
+                              type: string
+                            type: array
+                          managedInstanceGroupUrls:
+                            description: List of instance group URLs which have been
+                              assigned to this node pool.
+                            items:
+                              type: string
+                            type: array
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          operation:
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              pr:
+                description: PR number. Edit universe_types.go to remove/update
+                type: integer
+              projectId:
+                description: ProjectID that this unviverse sitting in. Edit universe_types.go
+                  to remove/update
+                type: string
+              repository:
+                description: Source repo triggered this unviverse. Edit universe_types.go
+                  to remove/update
+                type: string
+              sql:
+                description: SQL is a nested struct for gcp sql resources
+                properties:
+                  sqlDatabase:
+                    description: SQLDatabase is the Schema for the sql API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          charset:
+                            description: The charset value. See MySQL's [Supported
+                              Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+                              and Postgres' [Character Set Support](https://www.postgresql.org/docs/9.6/static/multibyte.html)
+                              for more details and supported values. Postgres databases
+                              only support a value of 'UTF8' at creation time.
+                            type: string
+                          collation:
+                            description: The collation value. See MySQL's [Supported
+                              Character Sets and Collations](https://dev.mysql.com/doc/refman/5.7/en/charset-charsets.html)
+                              and Postgres' [Collation Support](https://www.postgresql.org/docs/9.6/static/collation.html)
+                              for more details and supported values. Postgres databases
+                              only support a value of 'en_US.UTF8' at creation time.
+                            type: string
+                          instanceRef:
+                            description: The Cloud SQL instance.
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                        required:
+                        - instanceRef
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the SQLDatabase's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          selfLink:
+                            type: string
+                        type: object
+                    type: object
+                  sqlInstance:
+                    description: SQLInstance is the Schema for the sql API
+                    properties:
+                      apiVersion:
+                        description: 'APIVersion defines the versioned schema of this
+                          representation of an object. Servers should convert recognized
+                          schemas to the latest internal value, and may reject unrecognized
+                          values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                        type: string
+                      kind:
+                        description: 'Kind is a string value representing the REST
+                          resource this object represents. Servers may infer this
+                          from the endpoint the client submits requests to. Cannot
+                          be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                        type: string
+                      metadata:
+                        type: object
+                      spec:
+                        properties:
+                          databaseVersion:
+                            description: Immutable. The MySQL, PostgreSQL or SQL Server
+                              (beta) version to use. Supported values include MYSQL_5_6,
+                              MYSQL_5_7, MYSQL_8_0, POSTGRES_9_6, POSTGRES_10, POSTGRES_11,
+                              POSTGRES_12, POSTGRES_13, POSTGRES_14, SQLSERVER_2017_STANDARD,
+                              SQLSERVER_2017_ENTERPRISE, SQLSERVER_2017_EXPRESS, SQLSERVER_2017_WEB.
+                              Database Version Policies includes an up-to-date reference
+                              of supported versions.
+                            type: string
+                          encryptionKMSCryptoKeyRef:
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          masterInstanceRef:
+                            properties:
+                              external:
+                                description: The external name of the referenced resource
+                                type: string
+                              name:
+                                description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                type: string
+                              namespace:
+                                description: 'Namespace of the referent. More info:
+                                  https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                type: string
+                            type: object
+                          region:
+                            description: Immutable. The region the instance will sit
+                              in. Note, Cloud SQL is not available in all regions.
+                              A valid region must be provided to use this resource.
+                              If a region is not provided in the resource definition,
+                              the provider region will be used instead, but this will
+                              be an apply-time error for instances if the provider
+                              region is not supported with Cloud SQL. If you choose
+                              not to provide the region argument for this resource,
+                              make sure you understand this.
+                            type: string
+                          replicaConfiguration:
+                            description: The configuration for replication.
+                            properties:
+                              caCertificate:
+                                description: Immutable. PEM representation of the
+                                  trusted CA's x509 certificate.
+                                type: string
+                              clientCertificate:
+                                description: Immutable. PEM representation of the
+                                  replica's x509 certificate.
+                                type: string
+                              clientKey:
+                                description: Immutable. PEM representation of the
+                                  replica's private key. The corresponding public
+                                  key in encoded in the client_certificate.
+                                type: string
+                              connectRetryInterval:
+                                description: Immutable. The number of seconds between
+                                  connect retries.
+                                type: integer
+                              dumpFilePath:
+                                description: Immutable. Path to a SQL file in Google
+                                  Cloud Storage from which replica instances are created.
+                                  Format is gs://bucket/filename.
+                                type: string
+                              failoverTarget:
+                                description: Immutable. Specifies if the replica is
+                                  the failover target. If the field is set to true
+                                  the replica will be designated as a failover replica.
+                                  If the master instance fails, the replica instance
+                                  will be promoted as the new master instance.
+                                type: boolean
+                              masterHeartbeatPeriod:
+                                description: Immutable. Time in ms between replication
+                                  heartbeats.
+                                type: integer
+                              password:
+                                description: Immutable. Password for the replication
+                                  connection.
+                                properties:
+                                  value:
+                                    description: Value of the field. Cannot be used
+                                      if 'valueFrom' is specified.
+                                    type: string
+                                  valueFrom:
+                                    description: Source for the field's value. Cannot
+                                      be used if 'value' is specified.
+                                    properties:
+                                      secretKeyRef:
+                                        description: Reference to a value with the
+                                          given key in the given Secret in the resource's
+                                          namespace.
+                                        properties:
+                                          external:
+                                            description: The external name of the
+                                              referenced resource
+                                            type: string
+                                          name:
+                                            description: 'Name of the referent. More
+                                              info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                            type: string
+                                          namespace:
+                                            description: 'Namespace of the referent.
+                                              More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                            type: string
+                                        type: object
+                                    type: object
+                                type: object
+                              sslCipher:
+                                description: Immutable. Permissible ciphers for use
+                                  in SSL encryption.
+                                type: string
+                              username:
+                                description: Immutable. Username for replication connection.
+                                type: string
+                              verifyServerCertificate:
+                                description: Immutable. True if the master's common
+                                  name value is checked during the SSL handshake.
+                                type: boolean
+                            type: object
+                          resourceID:
+                            description: Immutable. Optional. The name of the resource.
+                              Used for creation and acquisition. When unset, the value
+                              of `metadata.name` is used as the default.
+                            type: string
+                          rootPassword:
+                            description: Immutable. Initial root password. Required
+                              for MS SQL Server, ignored by MySQL and PostgreSQL.
+                            properties:
+                              value:
+                                description: Value of the field. Cannot be used if
+                                  'valueFrom' is specified.
+                                type: string
+                              valueFrom:
+                                description: Source for the field's value. Cannot
+                                  be used if 'value' is specified.
+                                properties:
+                                  secretKeyRef:
+                                    description: Reference to a value with the given
+                                      key in the given Secret in the resource's namespace.
+                                    properties:
+                                      external:
+                                        description: The external name of the referenced
+                                          resource
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More
+                                          info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                    type: object
+                                type: object
+                            type: object
+                          settings:
+                            description: The settings to use for the database. The
+                              configuration is detailed below.
+                            properties:
+                              activationPolicy:
+                                description: This specifies when the instance should
+                                  be active. Can be either ALWAYS, NEVER or ON_DEMAND.
+                                type: string
+                              activeDirectoryConfig:
+                                properties:
+                                  domain:
+                                    description: Domain name of the Active Directory
+                                      for SQL Server (e.g., mydomain.com).
+                                    type: string
+                                required:
+                                - domain
+                                type: object
+                              authorizedGaeApplications:
+                                description: DEPRECATED. This property is only applicable
+                                  to First Generation instances, and First Generation
+                                  instances are now deprecated. see https://cloud.google.com/sql/docs/mysql/deprecation-notice
+                                  for information on how to upgrade to Second Generation
+                                  instances. Specifying this field has no-ops; it's
+                                  recommended to remove this field from your configuration.
+                                items:
+                                  type: string
+                                type: array
+                              availabilityType:
+                                description: The availability type of the Cloud SQL
+                                  instance, high availability (REGIONAL) or single
+                                  zone (ZONAL). For all instances, ensure that settings.backup_configuration.enabled
+                                  is set to true. For MySQL instances, ensure that
+                                  settings.backup_configuration.binary_log_enabled
+                                  is set to true. For Postgres instances, ensure that
+                                  settings.backup_configuration.point_in_time_recovery_enabled
+                                  is set to true.
+                                type: string
+                              backupConfiguration:
+                                properties:
+                                  backupRetentionSettings:
+                                    properties:
+                                      retainedBackups:
+                                        description: Number of backups to retain.
+                                        type: integer
+                                      retentionUnit:
+                                        description: The unit that 'retainedBackups'
+                                          represents. Defaults to COUNT.
+                                        type: string
+                                    required:
+                                    - retainedBackups
+                                    type: object
+                                  binaryLogEnabled:
+                                    description: True if binary logging is enabled.
+                                      If settings.backup_configuration.enabled is
+                                      false, this must be as well. Can only be used
+                                      with MySQL.
+                                    type: boolean
+                                  enabled:
+                                    description: True if backup configuration is enabled.
+                                    type: boolean
+                                  location:
+                                    description: Location of the backup configuration.
+                                    type: string
+                                  pointInTimeRecoveryEnabled:
+                                    description: True if Point-in-time recovery is
+                                      enabled.
+                                    type: boolean
+                                  startTime:
+                                    description: HH:MM format time indicating when
+                                      backup configuration starts.
+                                    type: string
+                                  transactionLogRetentionDays:
+                                    description: The number of days of transaction
+                                      logs we retain for point in time restore, from
+                                      1-7.
+                                    type: integer
+                                type: object
+                              collation:
+                                description: The name of server instance collation.
+                                type: string
+                              crashSafeReplication:
+                                description: DEPRECATED. This property is only applicable
+                                  to First Generation instances, and First Generation
+                                  instances are now deprecated. see https://cloud.google.com/sql/docs/mysql/deprecation-notice
+                                  for information on how to upgrade to Second Generation
+                                  instances. Specifying this field has no-ops; it's
+                                  recommended to remove this field from your configuration.
+                                type: boolean
+                              databaseFlags:
+                                items:
+                                  properties:
+                                    name:
+                                      description: Name of the flag.
+                                      type: string
+                                    value:
+                                      description: Value of the flag.
+                                      type: string
+                                  required:
+                                  - name
+                                  - value
+                                  type: object
+                                type: array
+                              diskAutoresize:
+                                description: Enables auto-resizing of the storage
+                                  size. Defaults to true. Set to false if you want
+                                  to set disk_size.
+                                type: boolean
+                              diskAutoresizeLimit:
+                                description: The maximum size, in GB, to which storage
+                                  capacity can be automatically increased. The default
+                                  value is 0, which specifies that there is no limit.
+                                type: integer
+                              diskSize:
+                                description: The size of data disk, in GB. Size of
+                                  a running instance cannot be reduced but can be
+                                  increased. If you want to set this field, set disk_autoresize
+                                  to false.
+                                type: integer
+                              diskType:
+                                description: 'The type of data disk: PD_SSD or PD_HDD.'
+                                type: string
+                              insightsConfig:
+                                description: Configuration of Query Insights.
+                                properties:
+                                  queryInsightsEnabled:
+                                    description: True if Query Insights feature is
+                                      enabled.
+                                    type: boolean
+                                  queryStringLength:
+                                    description: Maximum query length stored in bytes.
+                                      Between 256 and 4500. Default to 1024.
+                                    type: integer
+                                  recordApplicationTags:
+                                    description: True if Query Insights will record
+                                      application tags from query when enabled.
+                                    type: boolean
+                                  recordClientAddress:
+                                    description: True if Query Insights will record
+                                      client address when enabled.
+                                    type: boolean
+                                type: object
+                              ipConfiguration:
+                                properties:
+                                  allocatedIpRange:
+                                    description: 'The name of the allocated ip range
+                                      for the private ip CloudSQL instance. For example:
+                                      "google-managed-services-default". If set, the
+                                      instance ip will be created in the allocated
+                                      range. The range name must comply with RFC 1035.
+                                      Specifically, the name must be 1-63 characters
+                                      long and match the regular expression [a-z]([-a-z0-9]*[a-z0-9])?.'
+                                    type: string
+                                  authorizedNetworks:
+                                    items:
+                                      properties:
+                                        expirationTime:
+                                          type: string
+                                        name:
+                                          type: string
+                                        value:
+                                          type: string
+                                      required:
+                                      - value
+                                      type: object
+                                    type: array
+                                  ipv4Enabled:
+                                    description: Whether this Cloud SQL instance should
+                                      be assigned a public IPV4 address. At least
+                                      ipv4_enabled must be enabled or a private_network
+                                      must be configured.
+                                    type: boolean
+                                  privateNetworkRef:
+                                    properties:
+                                      external:
+                                        description: The external name of the referenced
+                                          resource
+                                        type: string
+                                      name:
+                                        description: 'Name of the referent. More info:
+                                          https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
+                                        type: string
+                                      namespace:
+                                        description: 'Namespace of the referent. More
+                                          info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/'
+                                        type: string
+                                    type: object
+                                  requireSsl:
+                                    type: boolean
+                                type: object
+                              locationPreference:
+                                properties:
+                                  followGaeApplication:
+                                    description: A Google App Engine application whose
+                                      zone to remain in. Must be in the same region
+                                      as this instance.
+                                    type: string
+                                  zone:
+                                    description: The preferred compute engine zone.
+                                    type: string
+                                type: object
+                              maintenanceWindow:
+                                description: Declares a one-hour maintenance window
+                                  when an Instance can automatically restart to apply
+                                  updates. The maintenance window is specified in
+                                  UTC time.
+                                properties:
+                                  day:
+                                    description: Day of week (1-7), starting on Monday.
+                                    type: integer
+                                  hour:
+                                    description: Hour of day (0-23), ignored if day
+                                      not set.
+                                    type: integer
+                                  updateTrack:
+                                    description: Receive updates earlier (canary)
+                                      or later (stable).
+                                    type: string
+                                type: object
+                              pricingPlan:
+                                description: Pricing plan for this instance, can only
+                                  be PER_USE.
+                                type: string
+                              replicationType:
+                                description: DEPRECATED. This property is only applicable
+                                  to First Generation instances, and First Generation
+                                  instances are now deprecated. see https://cloud.google.com/sql/docs/mysql/deprecation-notice
+                                  for information on how to upgrade to Second Generation
+                                  instances. Specifying this field has no-ops; it's
+                                  recommended to remove this field from your configuration.
+                                type: string
+                              tier:
+                                description: The machine type to use. See tiers for
+                                  more details and supported versions. Postgres supports
+                                  only shared-core machine types, and custom machine
+                                  types such as db-custom-2-13312. See the Custom
+                                  Machine Type Documentation to learn about specifying
+                                  custom machine types.
+                                type: string
+                            required:
+                            - tier
+                            type: object
+                        required:
+                        - settings
+                        type: object
+                      status:
+                        properties:
+                          conditions:
+                            description: Conditions represent the latest available
+                              observations of the SQLInstance's current state.
+                            items:
+                              properties:
+                                lastTransitionTime:
+                                  description: Last time the condition transitioned
+                                    from one status to another.
+                                  type: string
+                                message:
+                                  description: Human-readable message indicating details
+                                    about last transition.
+                                  type: string
+                                reason:
+                                  description: Unique, one-word, CamelCase reason
+                                    for the condition's last transition.
+                                  type: string
+                                status:
+                                  description: Status is the status of the condition.
+                                    Can be True, False, Unknown.
+                                  type: string
+                                type:
+                                  description: Type is the type of the condition.
+                                  type: string
+                              type: object
+                            type: array
+                          connectionName:
+                            description: The connection name of the instance to be
+                              used in connection strings. For example, when connecting
+                              with Cloud SQL Proxy.
+                            type: string
+                          firstIpAddress:
+                            type: string
+                          ipAddress:
+                            items:
+                              properties:
+                                ipAddress:
+                                  type: string
+                                timeToRetire:
+                                  type: string
+                                type:
+                                  type: string
+                              type: object
+                            type: array
+                          observedGeneration:
+                            description: ObservedGeneration is the generation of the
+                              resource that was most recently observed by the Config
+                              Connector controller. If this is equal to metadata.generation,
+                              then that means that the current reported status reflects
+                              the most recent desired state of the resource.
+                            type: integer
+                          privateIpAddress:
+                            type: string
+                          publicIpAddress:
+                            type: string
+                          selfLink:
+                            description: The URI of the created resource.
+                            type: string
+                          serverCaCert:
+                            properties:
+                              cert:
+                                description: The CA Certificate used to connect to
+                                  the SQL Instance via SSL.
+                                type: string
+                              commonName:
+                                description: The CN valid for the CA Cert.
+                                type: string
+                              createTime:
+                                description: Creation time of the CA Cert.
+                                type: string
+                              expirationTime:
+                                description: Expiration time of the CA Cert.
+                                type: string
+                              sha1Fingerprint:
+                                description: SHA Fingerprint of the CA Cert.
+                                type: string
+                            type: object
+                          serviceAccountEmailAddress:
+                            description: The service account email address assigned
+                              to the instance.
+                            type: string
+                        type: object
+                    type: object
+                type: object
+              ttl:
+                description: TTL is the amount of time an environment exist before
+                  expired
+                type: integer
+            type: object
+          status:
+            description: UniverseStatus defines the observed state of Universe
+            properties:
+              computenetwork:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file Conditions represent the latest available observations
+                  of an object''s state'
+                type: string
+              computesubnetwork:
+                type: string
+              containercluster:
+                type: string
+              sqlinstance:
+                type: string
+            required:
+            - computenetwork
+            - computesubnetwork
+            - containercluster
+            - sqlinstance
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: null
+  storedVersions: null

@@ -1,0 +1,8 @@
+apiVersion: multiverse.saga.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: trigger-sample
+spec:
+  repository: https://github.com/MyORG/my-repo.git
+  projectId: my-gcp-projectid
+  credentialSecretRef: my-git-secret
