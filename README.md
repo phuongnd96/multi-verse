@@ -1,14 +1,17 @@
 # Multiverse
 
-![workflow](https://github.com/phuongnd96/multi-verse/actions/workflows/ci.yaml/badge.svg
-)
-
-
 <img src=".assets/gaunlet.webp" alt="drawing" width="200"/>
 
 
 ## Description
-Multiverse is a Kubernetes Operator reconcile a [universe](./config/samples) CR to create GCP resources.
+Multiverse is a Kubernetes Operator reconcile a [universe](./config/samples) CR to create GCP resources on every Pull Requests:
+- VPC Network
+- Subnetwork
+- CloudNAT
+- GKE Cluster
+- Addons:
+	- External-dns
+	- Nginx-ingress
 
 
 <img src=".assets/multiverse-v1.png" alt="drawing"/>
