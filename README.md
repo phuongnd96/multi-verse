@@ -10,9 +10,10 @@ Multiverse is a Kubernetes Operator reconcile a [universe](./config/samples) CR 
 - CloudNAT
 - GKE Cluster
 - Addons:
-	- External-dns
+	- External-dns for automatic dns creation with CloudFlare
 	- Nginx-ingress
-
+	- Velero for restore source cluster resources into preview cluster
+	- Resource-patcher: a small addons that watch GCR Repository and update deployment with matching tags
 
 <img src=".assets/multiverse-v1.png" alt="drawing"/>
 
