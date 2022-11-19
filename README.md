@@ -14,6 +14,7 @@ Multiverse is a Kubernetes Operator reconcile a [universe](./config/samples) CR 
 	- Nginx-ingress
 	- Velero for restore source cluster resources into preview cluster
 	- Resource-patcher: a small addons that watch GCR Repository and update deployment with matching tags
+	- External-secrets: sync secrets from GSM
 
 <img src=".assets/multiverse-v1.png" alt="drawing"/>
 
