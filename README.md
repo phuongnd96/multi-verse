@@ -15,10 +15,8 @@ Multiverse is a Kubernetes Operator reconcile a [universe](./config/samples) CR 
 	- Velero for restore source cluster resources into preview cluster
 	- Resource-patcher: a small addons that watch GCR Repository and update deployment with matching tags
 	- External-secrets: sync secrets from GSM
-A funny comment will also be added to the Pull Request ![image](https://user-images.githubusercontent.com/60810674/203902548-a79dd116-8054-46ac-9244-ac5486e32999.png)
-
+A funny comment will also be added to the Pull Request.
 Default interval for the operator to check if there is any Pull Request is configurable via RequeueAfterSeconds (default 5m).
-
 Underthehood, multiverse use Google Cloud's Config Connector to create GCP Resources, along with Velero to take a snapshot and restore of current cluster.
 So Config Connector must be deployed first, hence this Operator only support applications running on GCP.
 <img src=".assets/multiverse-v1.png" alt="drawing"/>
